@@ -1,8 +1,9 @@
 require "minitest/spec"
 require "minitest/autorun"
+require 'minitest/pride'
 
-require "./before" if ENV["BEFORE"]
-require "./after" unless ENV["BEFORE"]
+require "before" if ENV["BEFORE"]
+require "after" unless ENV["BEFORE"]
 
 USERS = [
   User.new("Regular user", :password, password: "secret"),
