@@ -5,15 +5,6 @@ class User
     @name = name
     @type = type
     @options = options
-
-    @strategy = case type
-                  when :password
-                    Auth::Password.new self
-                  when :public_key
-                    Auth::PublicKey.new self
-                  when :oauth
-                    Auth::OAuth.new self
-                end
   end
 
   class << self
@@ -24,6 +15,7 @@ class User
   end
 
   def authenticate! options
+    @strategy ||= Auth::Strategies[type].new self
     @strategy.authenticated? options
   end
 end
@@ -68,4 +60,16 @@ module Auth
       true
     end
   end
+
+  class Strategies
+    @@strategies = {
+      password: Password,
+      public_key: PublicKey,
+      oauth: OAuth
+    }
+    def self.[] type
+      @@strategies[type]
+    end
+  end
+
 end
